@@ -5,7 +5,7 @@ In the programming section, you learned about various HTML tags. In design secti
 {./let}
 
 {.let body}
-<!-- Body starts from here -->
+<!-- Body starts here -->
 
 **Before you begin**, please sign up for the Piazza page for this class <!-- PIAZZA. UPDATE THIS EACH SEMESTER -->[here](#). Piazza is where you can ask and answer questions about this class and web design in general. It is also where a bunch of important annoucements about the class will be made!
 
@@ -46,7 +46,11 @@ Your first website should look something like this:
 
 ![Preview](assets/images/example.png)
 
-## Submission
+<!-- Body ends here -->
+{./let}
+
+{.let submission}
+<!-- Submission info starts here -->
 
 Submit the following files in a **zip** file through the Assignments tab of the WDD Portal:
 
@@ -54,10 +58,12 @@ Submit the following files in a **zip** file through the Assignments tab of the 
 - assets/images/
 		
 To clarify: Your **zip** file should include your HTML file, in addition to a folder titled "assets", which should include a folder titled "img" containing your image.
+
 Your assignment must be submitted as a **zip** file. Submission will automatically fail if your submission does not contain the index.html or if is not a zip file.
+
 This assignment is due by Thursday, **September 6th** at 6:30 PM PST.
 
-<!-- Body ends here -->
+<!-- Submission info ends here -->
 {./let}
 
 {.include assignment-template.md}
