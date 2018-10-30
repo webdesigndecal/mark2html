@@ -234,7 +234,7 @@ function build(entry, dist) {
 
     _build(entry, dist, path.dirname(entry));
 
-    fs.copySync("node_modules/highlight.js/styles/atom-one-light.css", path.join(dist, "assets/styles/atom-one-light.css"));
+    fs.copySync(require.resolve("highlight.js/styles/atom-one-light.css"), path.join(dist, "assets/styles/atom-one-light.css"));
     fs.copySync(path.join(__dirname, "../resources/assets"), path.join(dist, "assets"));
 }
 
