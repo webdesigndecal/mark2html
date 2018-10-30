@@ -18,9 +18,14 @@
             </div>
         </div>
         <div class="section">
+            <div class="block-highlight">
 {./raw}
 
-{. assignment-intro}
+                {. assignment-intro}
+
+{.raw}
+            </div>
+{./raw}
 
 {. body}
 
