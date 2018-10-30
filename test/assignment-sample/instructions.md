@@ -44,7 +44,7 @@ Here are the design requirements for the website:
 
 Your first website should look something like this:
 
-![Preview](assets/images/example.png)
+!{.link assets/images/example.png | Preview}
 
 <!-- Body ends here -->
 {./let}

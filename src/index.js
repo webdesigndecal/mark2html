@@ -169,16 +169,6 @@ function build(entry, dist) {
             return `[${name || url}](${url})`;
         });
 
-        // Linked static resources
-
-        text = text.replace(/!\[([^\]]*)\]\(([^\)]+)\)/g, function (match, alt, link) {
-            let linkedFilepath = _build(resolve(dir, link), dist, base).dest;
-
-            let url = path.relative(filedir, linkedFilepath);
-
-            return `![${alt}](${url})`;
-        });
-
         // Variables
 
         let variables = {};
