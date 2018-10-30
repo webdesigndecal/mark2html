@@ -66,4 +66,4 @@ This assignment is due by Thursday, **September 6th** at 6:30 PM PST.
 <!-- Submission info ends here -->
 {./let}
 
-{.include assignment-template.md}
+{.include template-assignment-v1.md}
