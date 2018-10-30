@@ -2,6 +2,8 @@
 
 "use strict";
 
+const replaceExt = require("replace-ext");
+
 const build = require("../src/index.js");
 
 const args = process.argv.slice(2);
@@ -11,4 +13,4 @@ if (args.length != 1) {
     process.exit(0);
 }
 
-build(args[0], args[0] + "_dist");
+build(args[0], replaceExt(args[0], "_dist"));
