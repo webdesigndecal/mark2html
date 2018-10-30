@@ -19,24 +19,24 @@ To start off, we need to create a **workspace** (a place where all of your code 
 
 1. Navigate to your desktop, right click, and create a folder (call it whatever you want).
 1. Now open up sublime, create a new file and save it in that folder as index.html.
-1. Go back into that folder and create another folder called 'assets'.
-1. Within the assets folder, create another folder called 'img' and go place your favorite selfie in that folder.
+1. Go back into that folder and create another folder called `assets`.
+1. Within the assets folder, create another folder called `img` and go place your favorite selfie in that folder.
 
 Now that your workspace is all set up, you are ready to start making your very first website. If you double click on the index.html file right now, it should open a blank page on your default browser (we recommend Google Chrome). When you make changes to your code, you can refresh that page to see the changes.
 
 Here are the programming requirements for the website:
 
-1. Write your name in huge, bold text (Hint: google 'h1' tag and 'b' tag).
+1. Write your name in huge, bold text (Hint: google `<h1>` tag and `<b>` tag).
 1. On the next line, write your major and year in italic text (Hint: this is done with, you guessed it, another tag. Try to find it online).
-1. Add a paragraph about yourself (Hint: use the 'p' tag, which stands for paragraph).
+1. Add a paragraph about yourself (Hint: use the `<p>` tag, which stands for paragraph).
 1. Add a picture of yourself so we can recognize you in class! (Hint: this is a self closing tag).
-1. Add a link that, when clicked, directs you to the most beautiful website you have ever seen. The text within the link should be the name of the website. (Hint: google 'link to another page html'.
-1. Make a new set of 'div' tags and nest however many more div tags you want in between them. In the inner most div tags write down how many parent-child hierarchies you've created with the 'div' tags.
+1. Add a link that, when clicked, directs you to the most beautiful website you have ever seen. The text within the link should be the name of the website. (Hint: google "link to another page html".
+1. Make a new set of `<div>` tags and nest however many more div tags you want in between them. In the inner most div tags write down how many parent-child hierarchies you've created with the `<div>` tags.
 
 Here are the design requirements for the website:
 
 1. Using the favorite website you linked in part 5 of the programming tasks above, create a wireframe for one page of it using pen/paper, PowerPoint, or your tool of choice.
-1. What is the goal of the website? Who is it intended for? How does the design accomplish this? Write 2-3 sentences answering these questions. (Use the 'p' tag again!)
+1. What is the goal of the website? Who is it intended for? How does the design accomplish this? Write 2-3 sentences answering these questions. (Use the `<p>` tag again!)
 1. Try to improve the website you've chosen, and create a redesigned wireframe of one page for the same website. Write 2-3 senteces about what problems your redesign addressed, and how it solved them.
 1. Add pictures of both the original wireframe and the redesigned wireframe so we can see what your writing's referring to!
 
