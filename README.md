@@ -2,7 +2,9 @@ A quick way to generate basic websites with your markdowns
 
 # Usage
 
-Your markdowns stay the same. Here are some exciting macros to enhance your experience,
+Your markdowns stay the same. For detailed notes about the markdown syntax (in GitHub flavor), please check [showdown](https://github.com/showdownjs/showdown/blob/master/README.md).
+
+Here are some exciting macros to enhance your experience,
 
 ## Including
 
