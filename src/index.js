@@ -122,7 +122,8 @@ function build(entry, dist) {
         let dir = path.dirname(file);
 
         // Output path & dir
-        let filepath = path.join(dist, path.relative(base, replaceExt(file, ".html")));
+        let filepath = path.join(dist,
+            path.relative(base, file === entry ? 'index.html' : replaceExt(file, ".html")));
         let filedir = path.dirname(filepath);
 
         // Input text
