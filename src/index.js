@@ -8,6 +8,8 @@ const replaceExt = require("replace-ext");
 const highlight = require("highlight.js");
 const decodeHTML = require("html-encoder-decoder").decode;
 
+const pjson = require(path.join(__dirname, '..', 'package.json'));
+
 // Regex's
 let regexLink = /{\.link(\*?)\s+([^|}]+)(?:\s+\|\s+([^}]+))?\s*}/g;
 let regexInclude = /{\.include\s+([^}]*)\s*}/g;
@@ -217,6 +219,10 @@ function build(entry, dist) {
         html = html.replace(/_{10}/g, function (match) {
             return `<span contenteditable spellcheck="false"></span>`;
         });
+
+        // Stamp versions
+
+        html += `<!-- ${pjson.name}@${pjson.version} -->`
 
         // Save the generated HTML
 
