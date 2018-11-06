@@ -27,10 +27,10 @@ let preprocess = (function () {
 
     let filestack = [];
 
-    function preprocess(entry) {
-        filestack.push(entry);
+    function preprocess(file) {
+        filestack.push(file);
 
-        let dir = path.dirname(entry);
+        let dir = path.dirname(file);
         let text;
 
         // Dynamic content flag, require page rebuilding
@@ -38,13 +38,13 @@ let preprocess = (function () {
 
         // Fetch raw text
 
-        switch (path.extname(entry)) {
+        switch (path.extname(file)) {
             case ".js":
-                text = require("./" + path.join(path.dirname(entry), path.basename(entry, ".js")))();
+                text = require("./" + path.join(path.dirname(file), path.basename(file, ".js")))();
                 dynamic = true;
                 break;
             default:
-                text = fs.readFileSync(entry, "utf8");
+                text = fs.readFileSync(file, "utf8");
         }
 
         // Resolve relative links
@@ -93,21 +93,21 @@ converter.setFlavor("github");
 
 // Function to build a Markdown file
 function build(entry, dist) {
-    function _build(entry, dist, base) {
-        if (preprocess.supportedExt.indexOf(path.extname(entry).toLowerCase()) < 0) {
+    function _build(file, dist, base) {
+        if (preprocess.supportedExt.indexOf(path.extname(file).toLowerCase()) < 0) {
             // Only preprocess & convert supported files
 
-            console.log("Copying", entry);
+            console.log("Copying", file);
 
-            let filepath = path.join(dist, path.relative(base, entry));
+            let filepath = path.join(dist, path.relative(base, file));
             let filedir = path.dirname(filepath);
 
             fs.ensureDirSync(filedir);
 
-            fs.copySync(entry, filepath);
+            fs.copySync(file, filepath);
 
             return {
-                src: entry,
+                src: file,
                 dest: filepath,
                 time: new Date().valueOf()
             };
@@ -116,17 +116,17 @@ function build(entry, dist) {
         // Preprocess the text
         // Build & link related documents
 
-        console.log("Building", entry);
+        console.log("Building", file);
 
         // Input dir
-        let dir = path.dirname(entry);
+        let dir = path.dirname(file);
 
         // Output path & dir
-        let filepath = path.join(dist, path.relative(base, replaceExt(entry, ".html")));
+        let filepath = path.join(dist, path.relative(base, replaceExt(file, ".html")));
         let filedir = path.dirname(filepath);
 
         // Input text
-        let preprocessed = preprocess(entry);
+        let preprocessed = preprocess(file);
         let text = preprocessed.text;
 
         // Headings
@@ -224,7 +224,7 @@ function build(entry, dist) {
         fs.writeFileSync(filepath, html);
 
         return {
-            src: entry,
+            src: file,
             dest: filepath,
             time: new Date().valueOf(),
             dynamic: preprocessed.dynamic,
