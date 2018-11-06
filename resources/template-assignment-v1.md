@@ -2,6 +2,8 @@
 <!doctype html>
 <html>
 <head>
+    <meta charset="utf-8">
+    <title>{. assignment-title}</title>
     <link rel="stylesheet" type="text/css" href="assets/styles/atom-one-light.css">
     <link rel="stylesheet" type="text/css" href="assets/styles/style.css">
 </head>
