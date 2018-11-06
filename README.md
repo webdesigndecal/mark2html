@@ -29,6 +29,12 @@ Since the syntax for image embedding is `![relative/path/to/src/image](alt-text)
 !{.link relative/path/to/src/image | alt-text}
 ```
 
+If wish to only generate the `relative/path/to/dist/file`, consider using
+
+```
+{.link* relative/path/to/src/file}
+```
+
 ## Variables
 
 To set a variable,

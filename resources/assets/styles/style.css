@@ -37,6 +37,10 @@ img {
     max-width: 100%;
 }
 
+video {
+    max-width: 100%;
+}
+
 li {
     margin: 0.5em 0;
 }

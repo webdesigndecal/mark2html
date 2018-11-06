@@ -9,7 +9,7 @@ const highlight = require("highlight.js");
 const decodeHTML = require("html-encoder-decoder").decode;
 
 // Regex's
-let regexLink = /{\.link\s+([^|}]+)(?:\s+\|\s+([^}]+))?\s*}/g;
+let regexLink = /{\.link(\*?)\s+([^|}]+)(?:\s+\|\s+([^}]+))?\s*}/g;
 let regexInclude = /{\.include\s+([^}]*)\s*}/g;
 let regexHeading = /{\.#([^}]*)\s*([^}]*)\s*}/g;
 let regexVariable = /{\.(let)?\s+([^}\s]+)(\s+([^}]+)\s*|\s*}([\s\S]*?){\.\/let|)}/g;
@@ -49,8 +49,8 @@ let preprocess = (function () {
 
         // Resolve relative links
 
-        text = text.replace(regexLink, function (match, filepath, name) {
-            return `{.link ${resolve(dir, filepath)}${name ? ` | ${name}` : ""}}`;
+        text = text.replace(regexLink, function (match, mode, filepath, name) {
+            return `{.link${mode} ${resolve(dir, filepath)}${name ? ` | ${name}` : ""}}`;
         });
 
         // Include text fragments
@@ -154,7 +154,7 @@ function build(entry, dist) {
 
         let links = [];
 
-        text = text.replace(regexLink, function (match, entry, name) {
+        text = text.replace(regexLink, function (match, mode, entry, name) {
             links.push(entry);
 
             let linkedFilepath = _build(entry, dist, base).dest;
@@ -166,6 +166,7 @@ function build(entry, dist) {
                     : linkedFilepath
             );
 
+            if (mode === '*') return url;
             return `[${name || url}](${url})`;
         });
 
