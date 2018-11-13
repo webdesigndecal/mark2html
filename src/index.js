@@ -3,6 +3,7 @@
 const fs = require("fs-extra");
 const path = require("path");
 
+const compressing = require("compressing");
 const showdown = require("showdown");
 const replaceExt = require("replace-ext");
 const highlight = require("highlight.js");
@@ -11,7 +12,7 @@ const decodeHTML = require("html-encoder-decoder").decode;
 const pjson = require(path.join(__dirname, '..', 'package.json'));
 
 // Regex's
-let regexLink = /{\.link(\*?)\s+([^|}]+)(?:\s+\|\s+([^}]+))?\s*}/g;
+let regexLink = /{\.link(\*?)((?::[^\s]+)*?)\s+([^|}]+)(?:\s+\|\s+([^}]+))?\s*}/g;
 let regexInclude = /{\.include\s+([^}]*)\s*}/g;
 let regexHeading = /{\.#([^}]*)\s*([^}]*)\s*}/g;
 let regexVariable = /{\.(let)?\s+([^}\s]+)(\s+([^}]+)\s*|\s*}([\s\S]*?){\.\/let|)}/g;
@@ -51,8 +52,8 @@ let preprocess = (function () {
 
         // Resolve relative links
 
-        text = text.replace(regexLink, function (match, mode, filepath, name) {
-            return `{.link${mode} ${resolve(dir, filepath)}${name ? ` | ${name}` : ""}}`;
+        text = text.replace(regexLink, function (match, mode, modifiers, filepath, name) {
+            return `{.link${mode}${modifiers} ${resolve(dir, filepath)}${name ? ` | ${name}` : ""}}`;
         });
 
         // Include text fragments
@@ -157,10 +158,28 @@ function build(entry, dist) {
 
         let links = [];
 
-        text = text.replace(regexLink, function (match, mode, entry, name) {
+        text = text.replace(regexLink, function (match, mode, modifiers, entry, name) {
             links.push(entry);
 
             let linkedFilepath = _build(entry, dist, base).dest;
+
+            modifiers.split(":").slice(1).forEach((modifier) => {
+                switch (modifier) {
+                    case "zip":
+
+                        let linkedZipFilepath = replaceExt(linkedFilepath, ".zip");
+
+                        // TODO: Use async replace so the zipping error can be caught and passed down
+                        console.log(`Zipping ${linkedFilepath} ~> ${linkedZipFilepath}`);
+                        compressing.zip.compressDir(linkedFilepath, linkedZipFilepath)
+                            .then(() => console.log(`Zipped ${linkedFilepath} ~> ${linkedZipFilepath}`))
+                            .catch((error) => console.log(`Failed to zip ${linkedFilepath}:`, error));
+
+                        linkedFilepath = linkedZipFilepath;
+
+                        break;
+                }
+            });
 
             let url = path.relative(
                 filedir,
