@@ -20,7 +20,7 @@
             </div>
         </div>
         <div class="section">
-            <div class="block-highlight">
+            <div class="block block-highlight">
 {./raw}
 
                 {. assignment-intro}
@@ -35,7 +35,7 @@
         </div>
         <div class="section">
             <h2>Submission</h2>
-            <div class="block-highlight">
+            <div class="block block-highlight">
 {./raw}
 
 {. submission}
