@@ -35,6 +35,14 @@ If wish to only generate the `relative/path/to/dist/file`, consider using
 {.link* relative/path/to/src/file}
 ```
 
+### Modifiers
+
+If you wish to zip the file after copying to the destination, try adding a `:zip` suffix,
+
+```
+{.link:zip relative/path/to/src/file | optional-text}
+```
+
 ## Variables
 
 To set a variable,
