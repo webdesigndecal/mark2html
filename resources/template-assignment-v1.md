@@ -4,14 +4,14 @@
 <head>
     <meta charset="utf-8">
     <title>{. assignment-title}</title>
-    <link rel="stylesheet" type="text/css" href="assets/styles/atom-one-light.css">
-    <link rel="stylesheet" type="text/css" href="assets/styles/style.css">
+    <link rel="stylesheet" type="text/css" href="{.link* assets/styles/atom-one-light.css}">
+    <link rel="stylesheet" type="text/css" href="{.link* assets/styles/style.css}">
 </head>
 <body>
     <div id="container">
         <div id="header">
             <div id="header-caption">
-                <img id="header-caption-logo" src="assets/images/logo.png">
+                <img id="header-caption-logo" src="{.link* assets/images/logo.png}">
                 <div id="header-caption-name">Web Design DeCal</div>
             </div>
             <div id="header-content">

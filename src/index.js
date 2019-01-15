@@ -18,11 +18,21 @@ let regexHeading = /{\.#([^}]*)\s*([^}]*)\s*}/g;
 let regexVariable = /{\.(let)?\s+([^}\s]+)(\s+([^}]+)\s*|\s*}([\s\S]*?){\.\/let|)}/g;
 let regexRaw = /{\.raw\s*}([\s\S]*?){\.\/raw}/g;
 
+const builtInResourcePrefix = '-mark2html-resources';
+
+function isBuiltinResource(filepath) {
+    return filepath.slice(0, builtInResourcePrefix.length) == builtInResourcePrefix;
+}
+
+function resolveFile(filepath) {
+    return filepath.replace(builtInResourcePrefix, path.join(__dirname, '../resources'));
+}
+
 function resolve(dir, filepath) {
     function tryFilepath(filepath) {
-        if (fs.existsSync(filepath)) return filepath;
+        if (fs.existsSync(resolveFile(filepath))) return filepath;
     }
-    return tryFilepath(path.join(dir, filepath)) || tryFilepath(path.join(__dirname, "../resources", filepath));
+    return tryFilepath(path.join(dir, filepath)) || tryFilepath(path.join(builtInResourcePrefix, filepath));
 }
 
 // Preprocessor to expand all file includes and resolve relative links
@@ -33,7 +43,9 @@ let preprocess = (function () {
     function preprocess(file) {
         filestack.push(file);
 
-        let dir = path.dirname(file);
+        const dir = path.dirname(file);
+        const resolvedFile = resolveFile(file);
+
         let text;
 
         // Dynamic content flag, require page rebuilding
@@ -43,11 +55,11 @@ let preprocess = (function () {
 
         switch (path.extname(file)) {
             case ".js":
-                text = require("./" + path.join(path.dirname(file), path.basename(file, ".js")))();
+                text = require("./" + path.join(path.dirname(resolvedFile), path.basename(resolvedFile, ".js")))();
                 dynamic = true;
                 break;
             default:
-                text = fs.readFileSync(file, "utf8");
+                text = fs.readFileSync(resolvedFile, "utf8");
         }
 
         // Resolve relative links
@@ -99,6 +111,7 @@ function build(entry, dist) {
     function _build(file, dist, base) {
         if (preprocess.supportedExt.indexOf(path.extname(file).toLowerCase()) < 0) {
             // Only preprocess & convert supported files
+            const resolvedFile = resolveFile(file);
 
             console.log("Copying", file);
 
@@ -107,7 +120,7 @@ function build(entry, dist) {
 
             fs.ensureDirSync(filedir);
 
-            fs.copySync(file, filepath);
+            fs.copySync(resolvedFile, filepath);
 
             return {
                 src: file,
@@ -120,9 +133,6 @@ function build(entry, dist) {
         // Build & link related documents
 
         console.log("Building", file);
-
-        // Input dir
-        let dir = path.dirname(file);
 
         // Output path & dir
         let filepath = path.join(dist,
@@ -259,10 +269,9 @@ function build(entry, dist) {
         };
     }
 
-    _build(entry, dist, path.dirname(entry));
+    fs.copySync(require.resolve("highlight.js/styles/atom-one-light.css"), path.join(__dirname, "../resources/assets/styles/atom-one-light.css"));
 
-    fs.copySync(require.resolve("highlight.js/styles/atom-one-light.css"), path.join(dist, "assets/styles/atom-one-light.css"));
-    fs.copySync(path.join(__dirname, "../resources/assets"), path.join(dist, "assets"));
+    _build(entry, dist, path.dirname(entry));
 }
 
 module.exports = build;

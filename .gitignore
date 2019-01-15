@@ -2,4 +2,6 @@
 
 /node_modules
 
+/resources/assets/styles/atom-one-light.css
+
 /examples/**/*_dist
