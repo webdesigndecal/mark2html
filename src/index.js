@@ -115,7 +115,7 @@ function build(entry, dist) {
 
             console.log("Copying", file);
 
-            let filepath = path.join(dist, path.relative(base, file));
+            let filepath = path.join(dist, isBuiltinResource(file) ? file : path.relative(base, file));
             let filedir = path.dirname(filepath);
 
             fs.ensureDirSync(filedir);
@@ -136,7 +136,7 @@ function build(entry, dist) {
 
         // Output path & dir
         let filepath = path.join(dist,
-            path.relative(base, file === entry ? 'index.html' : replaceExt(file, ".html")));
+            path.relative(base, file === entry ? path.join(path.dirname(file), 'index.html') : replaceExt(file, ".html")));
         let filedir = path.dirname(filepath);
 
         // Input text
