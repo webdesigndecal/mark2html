@@ -55,7 +55,7 @@ let preprocess = (function () {
 
         switch (path.extname(file)) {
             case ".js":
-                text = require("./" + path.join(path.dirname(resolvedFile), path.basename(resolvedFile, ".js")))();
+                text = require(path.join(process.cwd(), path.dirname(resolvedFile), path.basename(resolvedFile, ".js")))();
                 dynamic = true;
                 break;
             default:
