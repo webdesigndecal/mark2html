@@ -24,15 +24,16 @@ function isBuiltinResource(filepath) {
     return filepath.slice(0, builtInResourcePrefix.length) == builtInResourcePrefix;
 }
 
-function resolveFile(filepath) {
-    return filepath.replace(builtInResourcePrefix, path.join(__dirname, '../resources'));
+function resolveFilepath(canonicalFilepath) {
+    return canonicalFilepath.replace(builtInResourcePrefix, path.join(__dirname, '../resources'));
 }
 
-function resolve(dir, filepath) {
+function getCanonicalFilepath(baseCanonicalFileDir, filepath) {
     function tryFilepath(filepath) {
-        if (fs.existsSync(resolveFile(filepath))) return filepath;
+        if (fs.existsSync(resolveFilepath(filepath))) return filepath;
     }
-    return tryFilepath(path.join(dir, filepath)) || tryFilepath(path.join(builtInResourcePrefix, filepath));
+    return tryFilepath(path.join(baseCanonicalFileDir, filepath)) || 
+        tryFilepath(path.join(builtInResourcePrefix, filepath));
 }
 
 // Preprocessor to expand all file includes and resolve relative links
@@ -40,45 +41,54 @@ let preprocess = (function () {
 
     let filestack = [];
 
-    function preprocess(file) {
-        filestack.push(file);
+    function preprocess(canonicalFilepath) {
+        filestack.push(canonicalFilepath);
 
-        const dir = path.dirname(file);
-        const resolvedFile = resolveFile(file);
-
-        let text;
+        const baseCanonicalFileDir = path.dirname(canonicalFilepath);
+        const resolvedFilepath = resolveFilepath(canonicalFilepath);
 
         // Dynamic content flag, require page rebuilding
         let dynamic = false;
 
+        let text = "";
+
         // Fetch raw text
 
-        switch (path.extname(file)) {
+        switch (path.extname(canonicalFilepath)) {
             case ".js":
-                text = require(path.join(process.cwd(), path.dirname(resolvedFile), path.basename(resolvedFile, ".js")))();
+                text = require(path.join(process.cwd(), resolvedFilepath))();
                 dynamic = true;
                 break;
             default:
-                text = fs.readFileSync(resolvedFile, "utf8");
+                text = fs.readFileSync(resolvedFilepath, "utf8");
         }
 
-        // Resolve relative links
+        // Resolve relative links to canonical
 
-        text = text.replace(regexLink, function (match, mode, modifiers, filepath, name) {
-            return `{.link${mode}${modifiers} ${resolve(dir, filepath)}${name ? ` | ${name}` : ""}}`;
+        text = text.replace(regexLink, function (match, mode, modifiers, linkedFilepath, name) {
+            const canonicalFilepath = getCanonicalFilepath(baseCanonicalFileDir, linkedFilepath);
+            if (!canonicalFilepath) {
+                // File not found, remove {.link}
+                console.log("Preprocessor: File not found, skipped link to", linkedFilepath);
+                return name;
+            }
+            return `{.link${mode}${modifiers} ${canonicalFilepath}${name ? ` | ${name}` : ""}}`;
         });
 
         // Include text fragments
 
         let includes = [];
-        text = text.replace(regexInclude, function (match, filepath) {
-            filepath = resolve(dir, filepath);
+        text = text.replace(regexInclude, function (match, includedFilepath) {
+            const includedCanonicalFilepath = getCanonicalFilepath(baseCanonicalFileDir, includedFilepath);
+            if (!includedCanonicalFilepath) {
+                // File not found, skip including
+                console.log("Preprocessor: File not found, skipped including", includedFilepath);
+                return "";
+            }
 
-            includes.push(filepath);
+            console.log("Including", includedCanonicalFilepath);
 
-            console.log("Including", filepath);
-
-            let preprocessed = preprocess(filepath);
+            let preprocessed = preprocess(includedCanonicalFilepath);
 
             // Propagate dynamic content flag
             if (preprocessed.dynamic) dynamic = true;
@@ -107,24 +117,26 @@ let converter = new showdown.Converter();
 converter.setFlavor("github");
 
 // Function to build a Markdown file
-function build(entry, dist) {
-    function _build(file, dist, base) {
-        if (preprocess.supportedExt.indexOf(path.extname(file).toLowerCase()) < 0) {
+function build(entry, destBaseDir) {
+    function recursiveBuild(canonicalFilepath) {
+        if (preprocess.supportedExt.indexOf(path.extname(canonicalFilepath).toLowerCase()) < 0) {
             // Only preprocess & convert supported files
-            const resolvedFile = resolveFile(file);
+            const resolvedFilepath = resolveFilepath(canonicalFilepath);
 
-            console.log("Copying", file);
+            let destFilepath = path.join(destBaseDir, 
+                isBuiltinResource(canonicalFilepath) ? canonicalFilepath : 
+                path.relative(path.dirname(entry), canonicalFilepath));
+            let destFileDir = path.dirname(destFilepath);
 
-            let filepath = path.join(dist, isBuiltinResource(file) ? file : path.relative(base, file));
-            let filedir = path.dirname(filepath);
+            console.log("Copying", canonicalFilepath, "->", destFilepath);
 
-            fs.ensureDirSync(filedir);
+            fs.ensureDirSync(destFileDir);
 
-            fs.copySync(resolvedFile, filepath);
+            fs.copySync(resolvedFilepath, destFilepath);
 
             return {
-                src: file,
-                dest: filepath,
+                src: canonicalFilepath,
+                dest: destFilepath,
                 time: new Date().valueOf()
             };
         }
@@ -132,15 +144,16 @@ function build(entry, dist) {
         // Preprocess the text
         // Build & link related documents
 
-        console.log("Building", file);
-
         // Output path & dir
-        let filepath = path.join(dist,
-            path.relative(base, file === entry ? path.join(path.dirname(file), 'index.html') : replaceExt(file, ".html")));
-        let filedir = path.dirname(filepath);
+        let destFilepath = path.join(destBaseDir,
+            isBuiltinResource(canonicalFilepath) ? canonicalFilepath :
+            path.relative(path.dirname(entry), canonicalFilepath === entry ? path.join(path.dirname(canonicalFilepath), 'index.html') : replaceExt(canonicalFilepath, ".html")));
+        let destFileDir = path.dirname(destFilepath);
+
+        console.log("Building", canonicalFilepath, "->", destFilepath);
 
         // Input text
-        let preprocessed = preprocess(file);
+        let preprocessed = preprocess(canonicalFilepath);
         let text = preprocessed.text;
 
         // Headings
@@ -168,34 +181,34 @@ function build(entry, dist) {
 
         let links = [];
 
-        text = text.replace(regexLink, function (match, mode, modifiers, entry, name) {
-            links.push(entry);
+        text = text.replace(regexLink, function (match, mode, modifiers, linkedCanonicalFilepath, name) {
+            links.push(linkedCanonicalFilepath);
 
-            let linkedFilepath = _build(entry, dist, base).dest;
+            let linkedDestFilepath = recursiveBuild(linkedCanonicalFilepath).dest;
 
             modifiers.split(":").slice(1).forEach((modifier) => {
                 switch (modifier) {
                     case "zip":
 
-                        let linkedZipFilepath = replaceExt(linkedFilepath, ".zip");
+                        let linkedZipFilepath = replaceExt(linkedDestFilepath, ".zip");
 
                         // TODO: Use async replace so the zipping error can be caught and passed down
-                        console.log(`Zipping ${linkedFilepath} ~> ${linkedZipFilepath}`);
-                        compressing.zip.compressDir(linkedFilepath, linkedZipFilepath)
-                            .then(() => console.log(`Zipped ${linkedFilepath} ~> ${linkedZipFilepath}`))
-                            .catch((error) => console.log(`Failed to zip ${linkedFilepath}:`, error));
+                        console.log(`Zipping ${linkedDestFilepath} ~> ${linkedZipFilepath}`);
+                        compressing.zip.compressDir(linkedDestFilepath, linkedZipFilepath)
+                            .then(() => console.log(`Zipped ${linkedDestFilepath} ~> ${linkedZipFilepath}`))
+                            .catch((error) => console.log(`Failed to zip ${linkedDestFilepath}:`, error));
 
-                        linkedFilepath = linkedZipFilepath;
+                        linkedDestFilepath = linkedZipFilepath;
 
                         break;
                 }
             });
 
             let url = path.relative(
-                filedir,
-                path.basename(linkedFilepath) === "index.html"
-                    ? path.dirname(linkedFilepath) // Avoid index.html
-                    : linkedFilepath
+                destFileDir,
+                path.basename(linkedDestFilepath) === "index.html"
+                    ? path.dirname(linkedDestFilepath) // Avoid index.html
+                    : linkedDestFilepath
             );
 
             if (mode === '*') return url;
@@ -255,13 +268,13 @@ function build(entry, dist) {
 
         // Save the generated HTML
 
-        fs.ensureDirSync(filedir);
+        fs.ensureDirSync(destFileDir);
 
-        fs.writeFileSync(filepath, html);
+        fs.writeFileSync(destFilepath, html);
 
         return {
-            src: file,
-            dest: filepath,
+            src: canonicalFilepath,
+            dest: destFilepath,
             time: new Date().valueOf(),
             dynamic: preprocessed.dynamic,
             links,
@@ -271,7 +284,7 @@ function build(entry, dist) {
 
     fs.copySync(require.resolve("highlight.js/styles/atom-one-light.css"), path.join(__dirname, "../resources/assets/styles/atom-one-light.css"));
 
-    _build(entry, dist, path.dirname(entry));
+    recursiveBuild(entry);
 }
 
 module.exports = build;
