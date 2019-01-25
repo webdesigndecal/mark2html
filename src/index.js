@@ -32,7 +32,7 @@ function getCanonicalFilepath(baseCanonicalFileDir, filepath) {
     function tryFilepath(filepath) {
         if (fs.existsSync(resolveFilepath(filepath))) return filepath;
     }
-    return tryFilepath(path.join(baseCanonicalFileDir, filepath)) || 
+    return tryFilepath(path.join(baseCanonicalFileDir, filepath)) ||
         tryFilepath(path.join(builtInResourcePrefix, filepath));
 }
 
@@ -123,8 +123,8 @@ function build(entry, destBaseDir) {
             // Only preprocess & convert supported files
             const resolvedFilepath = resolveFilepath(canonicalFilepath);
 
-            let destFilepath = path.join(destBaseDir, 
-                isBuiltinResource(canonicalFilepath) ? canonicalFilepath : 
+            let destFilepath = path.join(destBaseDir,
+                isBuiltinResource(canonicalFilepath) ? canonicalFilepath :
                 path.relative(path.dirname(entry), canonicalFilepath));
             let destFileDir = path.dirname(destFilepath);
 
@@ -219,16 +219,20 @@ function build(entry, destBaseDir) {
 
         let variables = {};
 
-        text = text.replace(regexVariable, function (match, op, name, _, _value1, _value2) {
-            const value = _value1 || _value2;
-            switch (op) {
-                case "let":
-                    variables[name] = value;
-                    return "";
-                default:
-                    return variables[name];
-            }
-        });
+        function handleTextVariables(text) {
+            return text.replace(regexVariable, function (match, op, name, _, _value1, _value2) {
+                const value = _value1 || _value2;
+                switch (op) {
+                    case "let":
+                        variables[name] = value;
+                        return "";
+                    default:
+                        return handleTextVariables(variables[name]);
+                }
+            });
+        }
+
+        text = handleTextVariables(text);
 
         // Save raw
 
