@@ -1,8 +1,11 @@
 {.let assignment-title Homework 1}
 {.let assignment-due September 13th}
 {.let assignment-intro}
+
 **Required Tool: Text Editor and Google Chrome Web Inspector**
+
 In this exercise, you will get a plenty of practice using CSS selectors to select and style any element on your web page.
+
 {./let}
 
 {.let body}

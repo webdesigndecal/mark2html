@@ -1,7 +1,9 @@
 {.let assignment-title Homework 1}
 {.let assignment-due September 6th}
 {.let assignment-intro}
+
 In the programming section, you learned about various HTML tags. In design section, you learned about what makes a good website. Lets do a little more.
+
 {./let}
 
 {.let body}
