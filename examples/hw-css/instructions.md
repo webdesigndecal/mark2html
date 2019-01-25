@@ -18,7 +18,7 @@ In this exercise, you will get a plenty of practice using CSS selectors to selec
 
 For this assignment, we have already provided you all the code to start with, so you don't have to create any extra files. You can download the assignment file here:
 
-{.link:zip starter | Download Assignment Starter Files}
+<a class="btn" href="{.link*:zip starter}">Download Assignment Starter Files</a>
 
 In the assignment folder, you can find style.css inside assets/css/ folder. You can only make changes to this file. You are not allowed to change anything in index.html (except for problem 0, in the head tag, and the design section responses). This assignment is to have you practice using CSS selectors to select any element on your website, without making any edits in your HTML. We will take off points for making changes to the HTML file.
 
