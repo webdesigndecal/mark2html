@@ -77,4 +77,4 @@ Some of your text will be pruned while it's transformed into HTML. Wrapping your
 
 After cloning the repo, run `npm install`.
 
-You may find some samples demoing the features under `examples/`. To generate a website, run `bin/cli.js path/to/markdown.md`; running `bin/cli.js examples/assignment-sample/instructions.md` will generate a website placed in the file's directory `examples/assignment-sample/instructions_dist/`.
+You may find some samples demoing the features under `examples/`. To generate a website, run `bin/cli.js path/to/markdown.md`; running `bin/cli.js examples/assignment-sample/instructions.md` will generate a website placed in the file's directory `examples/assignment-sample/instructions-mark2html-output/`.
