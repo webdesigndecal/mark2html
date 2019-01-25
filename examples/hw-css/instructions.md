@@ -1,5 +1,6 @@
 {.let assignment-title Homework 1}
 {.let assignment-due September 13th}
+{.let assignment-due-time 6:30 PM PST}
 {.let assignment-intro}
 
 **Required Tool: Text Editor and Google Chrome Web Inspector**
@@ -171,7 +172,7 @@ We will check your code to see if you have made any changes to your index.html f
 
 Your assignment must be submitted as a **.zip** file. Submission will automatically fail if your submission does not contain the index.html or if is not a zip file.
 
-This assignment is due by Thursday, **September 13th** at 6:30PM.
+This assignment is due by **{. assignment-due}** at {. assignment-due-time}.
 
 <!-- Submission info ends here -->
 {./let}

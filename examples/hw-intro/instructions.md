@@ -1,5 +1,6 @@
 {.let assignment-title Homework 1}
 {.let assignment-due September 6th}
+{.let assignment-due-time 6:30 PM PST}
 {.let assignment-intro}
 
 In the programming section, you learned about various HTML tags. In design section, you learned about what makes a good website. Lets do a little more.
@@ -63,7 +64,7 @@ To clarify: Your **zip** file should include your HTML file, in addition to a fo
 
 Your assignment must be submitted as a **zip** file. Submission will automatically fail if your submission does not contain the index.html or if is not a zip file.
 
-This assignment is due by Thursday, **September 6th** at 6:30 PM PST.
+This assignment is due by **{. assignment-due}** at {. assignment-due-time}.
 
 <!-- Submission info ends here -->
 {./let}
