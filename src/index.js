@@ -12,7 +12,7 @@ const decodeHTML = require("html-encoder-decoder").decode;
 const pjson = require(path.join(__dirname, '..', 'package.json'));
 
 // Regex's
-let regexLink = /{\.link(\*?)((?::[^\s]+)*?)\s+([^|}]+)(?:\s+\|\s+([^}]+))?\s*}/g;
+let regexLink = /{\.link([!\*]*)((?::[^\s]+)*?)\s+([^|}]+)(?:\s+\|\s+([^}]+))?\s*}/g;
 let regexInclude = /{\.include\s+([^}]*)\s*}/g;
 let regexHeading = /{\.#([^}]*)\s*([^}]*)\s*}/g;
 let regexVariable = /{\.(let)?\s+([^}\s]+)(\s+([^}]+)\s*|\s*}([\s\S]*?){\.\/let|)}/g;
@@ -65,14 +65,14 @@ let preprocess = (function () {
 
         // Resolve relative links to canonical
 
-        text = text.replace(regexLink, function (match, mode, modifiers, linkedFilepath, name) {
+        text = text.replace(regexLink, function (match, modes, modifiers, linkedFilepath, name) {
             const canonicalFilepath = getCanonicalFilepath(baseCanonicalFileDir, linkedFilepath);
             if (!canonicalFilepath) {
                 // File not found, remove {.link}
                 console.log("Preprocessor: File not found, skipped link to", linkedFilepath);
                 return name;
             }
-            return `{.link${mode}${modifiers} ${canonicalFilepath}${name ? ` | ${name}` : ""}}`;
+            return `{.link${modes}${modifiers} ${canonicalFilepath}${name ? ` | ${name}` : ""}}`;
         });
 
         // Include text fragments
@@ -118,8 +118,8 @@ converter.setFlavor("github");
 
 // Function to build a Markdown file
 function build(entry, destBaseDir) {
-    function recursiveBuild(canonicalFilepath) {
-        if (preprocess.supportedExt.indexOf(path.extname(canonicalFilepath).toLowerCase()) < 0) {
+    function recursiveBuild(canonicalFilepath, needPreprocess = true) {
+        if (!needPreprocess || preprocess.supportedExt.indexOf(path.extname(canonicalFilepath).toLowerCase()) < 0) {
             // Only preprocess & convert supported files
             const resolvedFilepath = resolveFilepath(canonicalFilepath);
 
@@ -181,10 +181,10 @@ function build(entry, destBaseDir) {
 
         let links = [];
 
-        text = text.replace(regexLink, function (match, mode, modifiers, linkedCanonicalFilepath, name) {
+        text = text.replace(regexLink, function (match, modes, modifiers, linkedCanonicalFilepath, name) {
             links.push(linkedCanonicalFilepath);
 
-            let linkedDestFilepath = recursiveBuild(linkedCanonicalFilepath).dest;
+            let linkedDestFilepath = recursiveBuild(linkedCanonicalFilepath, !modes.includes('!')).dest;
 
             modifiers.split(":").slice(1).forEach((modifier) => {
                 switch (modifier) {
@@ -211,7 +211,7 @@ function build(entry, destBaseDir) {
                     : linkedDestFilepath
             );
 
-            if (mode === '*') return url;
+            if (modes.includes('*')) return url;
             return `[${name || url}](${url})`;
         });
 
