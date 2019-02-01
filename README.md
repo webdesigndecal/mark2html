@@ -9,14 +9,16 @@ To generate HTML from a markdown file, run `npx mark2html [your markdown file]`.
 For example, with `instructions.md`, we may run either:
 
 ```
-npx mark2html instructions.md
+npx @webdesigndecal/mark2html instructions.md
 # outputs to ./instructions-mark2html-output/
 
-npx mark2html instructions.md ./dist/
+npx @webdesigndecal/mark2html instructions.md ./dist/
 # outputs to specified output dir, ./dist/
 ```
 
 We can specify the optional output dir as the second command line argument; if there is none specified, it'll default to `[your file name]-mark2html-output]`, as shown above.
+
+If you'd rather not type `@webdesigndecal/` each time, you can install `mark2html` as a global executable with `npm install --global @webdesigndecal/mark2html`.
 
 Here are some exciting macros to enhance your experience,
 
