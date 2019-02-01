@@ -4,6 +4,20 @@ A quick way to generate basic websites with your markdowns
 
 Your markdowns stay the same. For detailed notes about the markdown syntax (in GitHub flavor), please check [showdown](https://github.com/showdownjs/showdown/blob/master/README.md).
 
+To generate HTML from a markdown file, run `npx mark2html [your markdown file]`.
+
+For example, with `instructions.md`, we may run either:
+
+```
+npx mark2html instructions.md
+# outputs to ./instructions-mark2html-output/
+
+npx mark2html instructions.md ./dist/
+# outputs to specified output dir, ./dist/
+```
+
+We can specify the optional output dir as the second command line argument; if there is none specified, it'll default to `[your file name]-mark2html-output]`, as shown above.
+
 Here are some exciting macros to enhance your experience,
 
 ## Including
