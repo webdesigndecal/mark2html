@@ -4,6 +4,20 @@ A quick way to generate basic websites with your markdowns
 
 Your markdowns stay the same. For detailed notes about the markdown syntax (in GitHub flavor), please check [showdown](https://github.com/showdownjs/showdown/blob/master/README.md).
 
+To generate HTML from a markdown file, run `npx @webdesigndecal/mark2html [your markdown file]`. (`npx` is a [package runner for Node.js modules](https://medium.com/@maybekatz/introducing-npx-an-npm-package-runner-55f7d4bd282b). It allows you to run npm command-line utilities like `mark2html` without installing it globally, and comes with `npm`. But you can also install `mark2html` normally, with `npm i -g @webdesigndecal/mark2html`, and use it by just running `mark2html` in your command line.)
+
+For example, with `instructions.md`, we may run either:
+
+```
+npx @webdesigndecal/mark2html instructions.md
+# outputs to ./instructions-mark2html-output/
+
+npx @webdesigndecal/mark2html instructions.md ./dist/
+# outputs to specified output dir, ./dist/
+```
+
+We can specify the optional output dir as the second command line argument; if there is none specified, it'll default to `[your file name]-mark2html-output`, as shown above.
+
 Here are some exciting macros to enhance your experience,
 
 ## Including
