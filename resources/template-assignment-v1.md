@@ -33,6 +33,22 @@
 
 {.raw}
         </div>
+        <div class="section explorer">
+            <h2>{. explorer-title}</h2>
+            <div class="block block-highlight">
+                <p>{. explorer-preface}</p>
+                <input id="explorer-toggle" type="checkbox"/>
+                <label for="explorer-toggle" class="btn">{. explorer-open}</label>
+                <p></p>
+                <div class="block block-unhighlight explorer-text">
+{./raw}
+
+{. explorer-footnotes}
+
+{.raw}
+                </div>
+            </div>
+        </div>
         <div class="section">
             <h2>Submission</h2>
             <div class="block block-highlight">
