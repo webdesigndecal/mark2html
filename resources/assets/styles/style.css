@@ -62,7 +62,7 @@ pre > code {
 
 /* Very temporary overflow fix */
 pre {
-    overflow-x: scroll;
+    overflow-x: auto;
 }
 
 details {
@@ -226,7 +226,7 @@ details > summary {
 }
 
 .explorer input[type=checkbox]:checked ~ .explorer-text {
-    max-height: 999999999px; /* Might be bad practice. */
+    max-height: unset;
     padding: 8px 16px;
     margin: 1em 0;
     opacity: 1;
@@ -240,5 +240,5 @@ a[href^="#footnote"] {
 }
 
 a[href^="#footnote"]:hover {
-    color: #46A03E
+    color: #46A03E;
 }
