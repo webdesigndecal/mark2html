@@ -5,7 +5,7 @@ const path = require("path");
 
 const compressing = require("compressing");
 const showdown = require("showdown");
-const footnotes = require("showdown-footnotes");
+const footnotes = require("@webdesigndecal/showdown-footnotes");
 const replaceExt = require("replace-ext");
 const highlight = require("highlight.js");
 const decodeHTML = require("html-encoder-decoder").decode;
