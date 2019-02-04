@@ -60,6 +60,11 @@ pre > code {
     background: none;
 }
 
+/* Very temporary overflow fix */
+pre {
+    overflow-x: scroll;
+}
+
 details {
     padding: 0 1em;
     border-radius: 2px;
